@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="RealTime_Common" />
+        <module name="AnalysisSystem" />
       </profile>
     </annotationProcessing>
   </component>
