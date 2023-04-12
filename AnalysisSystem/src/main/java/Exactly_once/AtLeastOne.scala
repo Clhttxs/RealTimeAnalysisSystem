@@ -6,7 +6,7 @@ import org.apache.spark.streaming.dstream.InputDStream
 import org.apache.spark.streaming.kafka010.{CanCommitOffsets, ConsumerStrategies, HasOffsetRanges, KafkaUtils, LocationStrategies, OffsetRange}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
-/*
+/**
 1.at most one至少一次消费：自动提交offset
 "enable.auto.commit" -> "true"
 "auto_commit_interval_ms" -> "5"(ms)
@@ -65,7 +65,7 @@ object AtLeastOne {
       }
     )
     println("cccc:"+Thread.currentThread().getName)
-    //kafkads.asInstanceOf[CanCommitOffsets].commitAsync(ranges) 直接在driver端执行(只会执行一次)会报空指针异常,ranges数组还没有初始化
+    //kafkads.asInstanceOf[CanCommitOffsets].commitAsync(ranges) 直接在driver端执行(只会执行一次,生成job一个模板,并不会真正执行任务)会报空指针异常,ranges数组还没有初始化
     ssc.start()
     ssc.awaitTermination()
   }
