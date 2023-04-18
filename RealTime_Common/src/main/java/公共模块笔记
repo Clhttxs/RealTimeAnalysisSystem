@@ -1,0 +1,158 @@
+common模块公共工具类的开发:
+
+	RedisUtil:  返回连接Redis的client
+	KafkaUtil:  返回Kakfa生产者，让调用者调用内置的方法，将数据发送到Kafka指定的主题中。
+
+					业务轻度关联: 只给你个生产者，具体怎么生产，由调用者负责。
+										每个业务生产的方式都不一样。
+
+					业务重度关联: 把生产者私有，只提供公有的生产方法，如何生产由工具类控制。
+										每个业务生产的方式都一样。
+
+	PropertiesUtil:  读取配置文件中指定Key的value
+
+	工具类提供的方法大部分都是静态的，方便调用(无需实例化)。
+
+-----------------------------------
+公司中，禁止自动创建topic的！
+
+自动创建topic:  目前不设置，允许的。如果要生产的那个topic不存在，自动创建。
+		topic有几个分区和几个副本，参考server.properties中的配置
+
+ 65 #自动创建的主题，默认的分区数
+ 66 num.partitions=3
+ 67 #自动创建的主题，默认的副本数
+ 68 default.replication.factor=3
+		仅仅用于测试。
+
+------------------------------
+log数据和离线数仓一样。
+startlog:    {"common":{"ba":xx,"md":xx,"mid":xx  },"start":{},"ts":xxxx}
+
+pagelog:      {"common":{"ba":xx,"md":xx,"mid":xx  },"page":{},"ts":xxxx}
+actionslog:   {"common":{"ba":xx,"md":xx,"mid":xx  },"page":{},"actions":[{action,"ts":xxxx},{action,"ts":xxxx}],"ts":xxxx}
+displaylog:   {"common":{"ba":xx,"md":xx,"mid":xx  },"page":{},"displays":[{display},{display}],"ts":xxxx}
+
+errlog:       {"common":{"ba":xx,"md":xx,"mid":xx  },"err":{},
+					start | page | actions | displays, "ts":xxxx
+				}
+
+--------------------------
+看到的数据，要么是
+startlog:   {"common":{"ba":xx,"md":xx,"mid":xx  },"start":{},"ts":xxxx}
+
+		{
+  "common": {
+    "ar": "110000",
+    "ba": "Xiaomi",
+    "ch": "xiaomi",
+    "is_new": "0",
+    "md": "Xiaomi 9",
+    "mid": "mid_87",
+    "os": "Android 10.0",
+    "uid": "595",
+    "vc": "v2.1.132"
+  },
+  "start": {
+    "entry": "icon",
+    "loading_time": 18776,
+    "open_ad_id": 5,
+    "open_ad_ms": 1506,
+    "open_ad_skip_ms": 0
+  },
+  "ts": 1658110461000
+}
+
+-----------------------------------------------------------------------------
+errlog:   {"common":{"ba":xx,"md":xx,"mid":xx  },"err":{},
+					start | page | actions | displays, "ts":xxxx
+{"common":{"ar":"440000","ba":"Xiaomi","ch":"web","is_new":"1","md":"Xiaomi Mix2 ","mid":"mid_4","os":"Android 11.0","uid":"856","vc":"v2.1.134"},"err":{"error_code":3836,"msg":" Exception in thread \\  java.net.SocketTimeoutException\\n \\tat com.atgugu.gmall2020.mock.log.bean.AppError.main(AppError.java:xxxxxx)"},"page":{"during_time":7158,"item":"960,212,549","item_type":"sku_ids","last_page_id":"trade","page_id":"payment"},"ts":1658110461000}
+
+----------------------------------------
+	其他:  { page,actions,displays  }
+{
+  "actions": [
+    {
+      "action_id": "get_coupon",
+      "item": "3",
+      "item_type": "coupon_id",
+      "ts": 1658110469879
+    }
+  ],
+  "common": {
+    "ar": "500000",
+    "ba": "vivo",
+    "ch": "web",
+    "is_new": "1",
+    "md": "vivo iqoo3",
+    "mid": "mid_64",
+    "os": "Android 10.0",
+    "uid": "1000",
+    "vc": "v2.0.1"
+  },
+  "displays": [
+    {
+      "display_type": "recommend",
+      "item": "854",
+      "item_type": "sku_id",
+      "order": 1,
+      "pos_id": 5
+    },
+    {
+      "display_type": "promotion",
+      "item": "849",
+      "item_type": "sku_id",
+      "order": 2,
+      "pos_id": 5
+    },
+    {
+      "display_type": "query",
+      "item": "300",
+      "item_type": "sku_id",
+      "order": 3,
+      "pos_id": 5
+    },
+    {
+      "display_type": "promotion",
+      "item": "462",
+      "item_type": "sku_id",
+      "order": 4,
+      "pos_id": 5
+    },
+    {
+      "display_type": "recommend",
+      "item": "184",
+      "item_type": "sku_id",
+      "order": 5,
+      "pos_id": 4
+    },
+    {
+      "display_type": "query",
+      "item": "371",
+      "item_type": "sku_id",
+      "order": 6,
+      "pos_id": 1
+    }
+  ],
+  "page": {
+    "during_time": 17758,
+    "item": "806",
+    "item_type": "sku_id",
+    "last_page_id": "good_list",
+    "page_id": "good_detail",
+    "source_type": "recommend"
+  },
+  "ts": 1658110461000
+}
+
+------------------------------------
+集群的masterurl如何写?
+开发： 在本机去调试。调试业务逻辑是否报错。
+		集群: local[*]
+context = new StreamingContext("local[*]",appName,Seconds(batchDuration))
+部署:  用spark-submit 去提交jar包
+程序打包，打包之前，把master由本地改为 目标集群 或 null
+context = new StreamingContext(null,appName,Seconds(batchDuration))
+
+在提交app时指定集群:
+spark-submit

@@ -1,11 +1,11 @@
 package Exactly_once
 
+import RealTimeUtils.{DStreamUtil, JDBCUtil}
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.TopicPartition
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.kafka010.{ConsumerStrategies, HasOffsetRanges, KafkaUtils, LocationStrategies, OffsetRange}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
-import utils.JDBCUtil
 
 import java.sql.{Connection, PreparedStatement, ResultSet}
 import scala.collection.concurrent.TrieMap
@@ -166,9 +166,11 @@ object ExactlyOnceTransaction {
     val kafkads = KafkaUtils.createDirectStream[String,String](
       ssc,
       LocationStrategies.PreferConsistent,
-      ConsumerStrategies.Subscribe[String, String](Set("exactly_one"), kafkapara,offsets)/**将获取的offsets集合放入参数列表,offsets为空也能正确运行*/
+      ConsumerStrategies.Subscribe[String, String](Set("exactly_one"), kafkapara,offsets)/**将获取的offsets集合放入参数列表,offsets为空(即第一次消费,数据库还没有初始化)也能正确运行*/
       //当消费者启动时，如果没有在数据库中找到对应的offset信息,可以根据业务需要选择其中的一种类型作为默认的offset："auto.offset.reset"->"earliest"|"latest"|"none"
     )
+//val kafkads = DStreamUtil.createDStream(ssc, "exactly_one", "exactlyone", true, offsets)
+    print(kafkads)
     /**3.进行业务处理*/
     kafkads.foreachRDD(
       rdd =>{

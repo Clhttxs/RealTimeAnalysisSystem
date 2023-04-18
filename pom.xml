@@ -34,6 +34,7 @@
         <druid.verson>1.2.8</druid.verson>
         <es.version>7.8.0</es.version>
         <http.client>3.1</http.client>
+        <junit.version>4.11</junit.version>
     </properties>
 
     <!--dependencies 里面的依赖，可以被子module无条件(无需显示声明)继承-->
@@ -113,7 +114,12 @@
                 <artifactId>commons-httpclient</artifactId>
                 <version>${http.client}</version>
             </dependency>
+<!--            单元测试的依赖-->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
 </project>
