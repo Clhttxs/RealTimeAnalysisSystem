@@ -1,15 +1,16 @@
 package Apps
 
-import CommonUtils.KafkaClientUtil
-import Constant.TopicConstant
-import RealTimeUtils.DStreamUtil
+import Apps.StartLogApp.context
+import CommonUtils.{KafkaClientUtil, RedisUtil}
+import Constant.{StopGracefullyConstant, TopicConstant}
+import RealTimeUtils.{DStreamUtil, StopGracefullyUtil}
 import com.alibaba.fastjson.{JSON, JSONArray, JSONObject}
 import com.google.gson.Gson
 import org.apache.kafka.clients.KafkaClient
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.kafka010.{CanCommitOffsets, HasOffsetRanges, KafkaUtils, OffsetRange}
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.streaming.{Seconds, StreamingContext, StreamingContextState}
 
 import java.util
 
@@ -40,9 +41,9 @@ import java.util
 object LogDiversionApp extends BaseApp {
   override var topic: String =TopicConstant.ORIGINAL_LOG
   override var groupId: String = "realtime01"
-  override var appName: String = "LOgDiversionApp"
+  override var appName: String = "LogDiversionApp"
   override var batchDuration: Int = 10
-
+  override var stopName: String = StopGracefullyConstant.STOPLOGDIVERSION
   /**
    * 炸裂actions,并将每一条action、page、common聚合
    * @param jsonObject 整条日志log的

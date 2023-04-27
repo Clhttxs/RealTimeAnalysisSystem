@@ -43,7 +43,13 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
         </dependency>
-<!--        jdbc驱动-->
+<!--        jdbc驱动采用5.x.x版本,否则将与phoenix依赖版本才生冲突-->
+<!--        或者降低降低protobuf版本
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>2.5.0</version>
+        </dependency>-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

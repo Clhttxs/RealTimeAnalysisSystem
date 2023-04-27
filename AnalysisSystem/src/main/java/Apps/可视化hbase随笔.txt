@@ -1,0 +1,103 @@
+可选。
+	不是成熟的方案。
+	
+计算API的选择:
+		①使用phoenix
+		②调用HBase的原生API
+		③使用Hive 读取hbase中的数据，使用Spark或mr进行计算
+		
+可视化方案的选择；
+		①superset
+		②前端程序员  nvd3.js  echarts.js 对后端查询后的数据进行可视化
+		
+前后端的交互:
+
+		后端: superset。 不直接支持hbase!
+		
+		
+		前端程序员： 编写url请求指定的后端数据接口(不是java中的interface)
+						收到数据后再使用  nvd3.js  echarts.js 对数据进行可视化显示。
+						
+-----------------------------------
+官方的建议: 
+		superset + presto + hbase
+		
+		换一个你会的不成熟:
+		superset + hive + hbase
+		
+--------------------------------
+不用superset，找一个可以可视化hbase的BI工具(找不到，花钱买插件)
+		PowerBI
+		
+---------------------
+自己实现BI功能
+		前端程序   ---->http <---Json--->		JavaAPP  ------>	原生API|Phoenix		---->	hbase
+		
+---------------------------------------------
+hive查询hbase
+hive是计算引擎，要计算，必须先建一张表取映射数据(hdfs | hbase)
+
+
+
+CREATE external TABLE REALTIME2022_STARTLOG_HIVE(
+              ID string ,
+              OPEN_AD_MS int,
+              OS string,
+              CH string,
+              IS_NEW string,
+              MID string,
+              OPEN_AD_ID string,
+              VC string,
+              AR string,
+              UID string,
+              ENTRY string,
+              OPEN_AD_SKIP_MS int,
+              MD string,
+              LOADING_TIME string,
+              BA string,
+              TS bigint,
+              START_DATE date,
+              START_TIME timestamp
+)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES (
+"hbase.columns.mapping" = ":key,0:OPEN_AD_MS ,0:OS ,0:CH ,0:IS_NEW ,0:MID ,0:OPEN_AD_ID ,0:VC ,0:AR ,0:UID ,0:ENTRY ,0:OPEN_AD_SKIP_MS ,0:MD ,0:LOADING_TIME ,0:BA ,0:TS ,0:START_DATE ,0:START_TIME"
+)
+TBLPROPERTIES("hbase.table.name" = "REALTIME2022_STARTLOG");
+
+①必须，只能是external table
+②hive的表名随便
+③hive的列的数量  <= hbase中列的数量
+④hive中列的类型 随便。只要hbase中的数据可以转换为你设置的列的类型即可
+⑤固定写法
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES (
+	"hbase.columns.mapping" = "xxxx"
+)
+TBLPROPERTIES("hbase.table.name" = "hbase要映射的表名");
+
+	xxxx 指hive中的列，按照声明的顺序要和hbase中哪里列进行映射。
+	其中如果要映射rowkey主键列，使用 关键字 ":key"
+	
+举例:
+
+
+CREATE external TABLE aaa(
+  ba string,
+  ts bigint,
+  start_date date,
+  start_time timestamp,
+  id string
+)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES (
+  "hbase.columns.mapping" = "0:BA ,0:TS, 0:START_DATE ,0:START_TIME ,:key"
+)
+TBLPROPERTIES("hbase.table.name" = "REALTIME2022_STARTLOG");
+
+-----------------------------------------
+thrift: facebook开发的一个跨语言的RPC框架。
+			可以python程序向一个 java程序发送 RPC请求！
+
+
+		

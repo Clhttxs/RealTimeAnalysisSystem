@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS REALTIME2022_STARTLOG(
+              ID VARCHAR PRIMARY KEY,
+              OPEN_AD_MS VARCHAR,
+              OS VARCHAR,
+              CH VARCHAR,
+              IS_NEW VARCHAR,
+              MID VARCHAR,
+              OPEN_AD_ID VARCHAR,
+              VC VARCHAR,
+              AR VARCHAR,
+              UID VARCHAR,
+              ENTRY VARCHAR,
+              OPEN_AD_SKIP_MS VARCHAR,
+              MD VARCHAR,
+              LOADING_TIME VARCHAR,
+              BA VARCHAR,
+              TS VARCHAR,
+              START_DATE VARCHAR,
+              START_TIME VARCHAR
+)
+COLUMN_ENCODED_BYTES= 0;

@@ -18,7 +18,7 @@ object DStreamUtil {
    * @param offsets 从MySQL中获取的分区号和偏移量，默认是null，只有isSaveToMysql=true时，才需要穿传递
    * @return 返回一个Kafka的输入流
    */
-  def createDStream(context:StreamingContext,topic:String,groupId:String,offsetReset:String="latest",isSaveToMysql:Boolean=false,offsets:Map[TopicPartition, Long]=null): InputDStream[ConsumerRecord[String, String]] ={
+  def createDStream(context:StreamingContext,topic:String,groupId:String,enableCommit:String = "false",offsetReset:String="latest",isSaveToMysql:Boolean=false,offsets:Map[TopicPartition, Long]=null): InputDStream[ConsumerRecord[String, String]] ={
     try {
       val kafkapara = Map[String, Object](
         ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> PropertiesUtil.getProperty("kafka.broker.list"),
@@ -28,7 +28,7 @@ object DStreamUtil {
         //这个参数只影响第一次消费,第一次消费没有指定offsets，才读取此参数。
         //如果提交过偏移量，就会从提交的位置往后消费
         ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> offsetReset,
-        ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG -> "false"
+        ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG -> enableCommit
       )
       var kafkaDS: InputDStream[ConsumerRecord[String, String]] = null
       if (isSaveToMysql) {
