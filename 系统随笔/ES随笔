@@ -1,0 +1,98 @@
+ES是分布式。数据写入ES时是分布式存储(分片，副本)。
+------------------------------------
+
+HDFS： 分布式存储。每个文件被切块，每个块有N个副本，分散集群不同DataNode节点上。
+
+Kafka:  一个Topic可以有N个Partition，每个Partition有副本。多个副本也是分散在集群的多个Broker上。
+
+partiton:  分片
+block切块: 分片
+
+好处：  ①单台集群的存储能力有限，通过分片可以扩展存储能力
+				每台机器都是500G的磁盘，希望存储 600G的数据。
+				可以将600G的数据切成小片，分布式存储
+
+		②可以提升读写单个数据的IO能力。
+				不切片，读写只会发生在一台机器。使用一台机器IO
+				切片，N台机器IO
+
+--------------------------------------
+6.0之前的ES
+
+index:  库
+type :  表
+	一个index可以有多个type。 一个库中，可以存多种类型的表。
+
+----------------
+6.0的ES
+index:  库
+type :  表
+
+	一个index只能有一个type。 type名字可以随意
+---------------
+7.0的ES
+index:  库
+type :  表(淡化)
+
+	一个index只能有一个type。 type名字是固定的 _doc
+	在创建index时，使用index时，无需指定type!
+
+----------------
+8.0的ES
+
+index:  库
+
+------------
+单一视图:   连接集群中的任意一个节点，读写的功能是一样的。
+
+zk
+
+----------------------
+public class Stu{
+	private String name;
+	private Address address;
+
+}
+
+public class Address{
+	private String name;
+	private Location loc;
+
+}
+
+public class Location{
+	private String name;
+	private String streetname;
+
+}
+
+JSON:
+{}:  对象
+[]: 数组
+
+{
+	"name":"jack"
+	"address": {
+		"name":"家庭地址"
+		"loc":{
+			"name":"xxxx",
+			"streetname":"航城街道"
+		}
+
+	}
+}
+
+-------------------------
+public class Stu{
+	private String id;
+	private String name;
+	private Hobby hobby;
+
+}
+
+public class Hobby{
+	private String name;
+	private Integer years;
+
+}
+

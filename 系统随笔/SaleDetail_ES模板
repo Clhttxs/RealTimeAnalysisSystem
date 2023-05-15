@@ -1,0 +1,72 @@
+PUT  _template/realtime2022_sale_detail_template
+{
+   "index_patterns": ["realtime2022_sale_detail*"],
+    "settings": {
+      "number_of_shards": 3
+    },
+    "aliases" : {
+      "{index}-query": {},
+      "realtime2022_sale_detail-query":{}
+    },
+    "mappings" : {
+        "properties" : {
+          "order_detail_id" : {
+            "type" :   "keyword"
+          },
+          "order_id" : {
+            "type" : "keyword"
+          },
+          "create_time" : {
+            "type" : "date" ,
+            "format" : "yyyy-MM-dd HH:mm:ss"
+          },
+          "dt" : {
+            "type" : "date"
+          },
+          "order_status" : {
+                "type" : "keyword"
+          },
+          "sku_id" : {
+                "type" : "keyword"
+          },
+"sku_num" : {
+                "type" : "integer"
+          },
+"province_id" : {
+                "type" : "keyword"
+          },
+          "province_name" : {
+                "type" : "keyword"
+          },
+          "region_id" : {
+                "type" : "keyword"
+          },
+          "iso_code" : {
+                "type" : "keyword"
+          },
+          "iso_3166_2" : {
+                "type" : "keyword"
+          },
+          "sku_name" : {
+            "type" : "text",
+            "analyzer": "ik_max_word"
+          },
+          "sku_price" : {
+            "type" : "float"
+          },
+          "user_age" : {
+            "type" : "long"
+          },
+          "user_gender" : {
+            "type" : "keyword"
+          },
+          "user_id" : {
+            "type" : "keyword"
+          },
+          "user_level" : {
+            "type" : "keyword",
+            "index" : false
+          }
+        }
+      }
+  }

@@ -1,7 +1,11 @@
 import RealTimeUtils.DateParseUtil
 
+import java.time.LocalDate
+
 object Test {
   def main(args: Array[String]): Unit = {
-    println(DateParseUtil.parseMillTsToDateTime(12345613134561L))
+    val ts = System.currentTimeMillis()
+    println(ts)
+    println(DateParseUtil.parseMillTsToDateMinute(ts))
   }
 }

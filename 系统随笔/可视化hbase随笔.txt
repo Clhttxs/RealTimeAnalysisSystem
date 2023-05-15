@@ -97,7 +97,7 @@ TBLPROPERTIES("hbase.table.name" = "REALTIME2022_STARTLOG");
 
 -----------------------------------------
 thrift: facebook开发的一个跨语言的RPC框架。
-			可以python程序向一个 java程序发送 RPC请求！
+		可以python程序向一个 java程序发送 RPC请求！
 
 
 		

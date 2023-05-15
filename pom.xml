@@ -11,6 +11,7 @@
     <modules>
         <module>RealTime_Common</module>
         <module>AnalysisSystem</module>
+        <module>RealTime_CanalClient</module>
     </modules>
 
     <!--变量名

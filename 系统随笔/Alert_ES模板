@@ -1,0 +1,30 @@
+PUT _template/realtime_behaviour_alert_template
+{
+  "index_patterns": ["realtime2022_behaviour_alert*"],
+  "settings": {
+    "number_of_shards": 3
+  },
+  "aliases" : {
+    "{index}-query": {},
+    "realtime2022_behaviour_alert-query":{}
+  },
+   "mappings": {
+       "properties":{
+         "mid":{
+           "type":"keyword"
+         },
+         "uids":{
+           "type":"keyword"
+         },
+         "itemIds":{
+           "type":"keyword"
+         },
+         "events":{
+           "type":"keyword"
+         },
+         "ts":{
+           "type":"date"
+         }
+       }
+     }
+}

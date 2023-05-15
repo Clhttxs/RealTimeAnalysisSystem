@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="RealTime_Common" />
         <module name="AnalysisSystem" />
+        <module name="RealTime_CanalClient" />
       </profile>
     </annotationProcessing>
   </component>
